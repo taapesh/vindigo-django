@@ -1,0 +1,11 @@
+input {
+    height: 40px;
+    width: 250px;
+    font-size: 18px;
+    border-color: #ccc;
+}
+
+.test-drive-btn {
+    height: 40px;
+    margin-left: 15px;
+}
