@@ -9,8 +9,13 @@
 
         <link rel="stylesheet" href="/static/css/normalize.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.14.2/mapbox-gl.js'></script>
-        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.14.2/mapbox-gl.css' rel='stylesheet' />
+        
+        <!-- Mapbox -->
+        <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
+        <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
+        <script src='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.js'></script>
+        <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.css' type='text/css' />
+
         <link rel="stylesheet" href="/static/css/main.css">
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
         <link rel="stylesheet" href="/static/css/custom.css">
@@ -18,9 +23,11 @@
 
         <style>
             body { margin:0; padding:0; }
-            #map { position:absolute; top:0; bottom:0; width:100%; }
+            #map { top:0; bottom:0; width:100%; height: 420px; border-color: #333; border-width: 1px; border-style: solid; }
         </style>
+
     </head>
+
     <body>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -29,13 +36,10 @@
         <div id="map"></div>
 
         <div class="container" style="margin-top: 30px">
-            <form class="pure-form">
-                <input type="text" placeholder="Start"></input>
-                <input type="text" placeholder="End"></input>
-                <button class="pure-button pure-button-primary test-drive-btn">Test Drive</button>
-                <div id="dvDistance"></div>
-            </form>
-
+            <input id="start" type="text" placeholder="Start"></input>
+            <input id="end" type="text" placeholder="End"></input>
+            <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Test Drive</button>
+            <div id="stats"></div>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -53,83 +57,197 @@
             ga('create','UA-XXXXX-X','auto');ga('send','pageview');
         </script>
 
-        <script type="text/javascript">
 
-function initMap() {
-    var directionsService = new google.maps.DirectionsService;
-    var directionsDisplay = new google.maps.DirectionsRenderer;
+<script>
+var base = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
+var baseDirections = "https://api.mapbox.com/v4/directions/mapbox.driving/"
+var key = "pk.eyJ1IjoidGFhcGVzaCIsImEiOiJjaWt4eW9iNXgwMHo4dnltM2x4eTJ4eHE3In0.04-WgulwzLNQTZLRinDiJw"
 
-    // Define map style
-    var customMapType = new google.maps.StyledMapType(
-        [{"featureType":"landscape.man_made","elementType":"geometry","stylers":[{"color":"#f7f1df"}]},{"featureType":"landscape.natural","elementType":"geometry","stylers":[{"color":"#d0e3b4"}]},{"featureType":"landscape.natural.terrain","elementType":"geometry","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.business","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.medical","elementType":"geometry","stylers":[{"color":"#fbd3da"}]},{"featureType":"poi.park","elementType":"geometry","stylers":[{"color":"#bde6ab"}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#ffe15f"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#efd151"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"road.local","elementType":"geometry.fill","stylers":[{"color":"black"}]},{"featureType":"transit.station.airport","elementType":"geometry.fill","stylers":[{"color":"#cfb2db"}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#a2daf2"}]}], {
-        name: 'Custom Style'
-    });
+// Set access token
+L.mapbox.accessToken = 'pk.eyJ1IjoidGFhcGVzaCIsImEiOiJjaWt4eW9iNXgwMHo4dnltM2x4eTJ4eHE3In0.04-WgulwzLNQTZLRinDiJw';
 
-    var customMapTypeId = 'custom_style';
+/**
+ * Initialize Mapbox
+ */
+var map = L.mapbox.map('map', 'mapbox.streets', {zoomControl: false}) 
+    .setView([32.78194730000001, -96.79070819999998], 15);
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-        scrollwheel: false,
-        zoomControl: false,
-        streetViewControl: false,
-        zoom: 13,
-        center: {lat: 32.781947, lng: -96.790708},
-        mapTypeControl: false,
-        mapTypeControlOptions: {
-            mapTypeIds: [google.maps.MapTypeId.ROADMAP, customMapTypeId]
-        }
-    });
+map.doubleClickZoom.disable();
+map.scrollWheelZoom.disable();
 
-    directionsDisplay.setMap(map);
-    map.mapTypes.set(customMapTypeId, customMapType);
-    map.setMapTypeId(customMapTypeId);
-    calculateAndDisplayRoute(directionsService, directionsDisplay);
-}
+/**
+ * Convert text location of start/end to LatLng coordinates and start trip
+ */
+function getCoords() {
+    var start = $("#start").val();  // 2203 Commerce St, Dallas, TX 75201
+    var end = $("#end").val();      // 2901 Indiana St., Dallas, TX
 
-function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-    var start = new google.maps.LatLng(37.7699298, -122.4469157);
-    var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
-
-  directionsService.route({
-    origin: start,
-    destination: end,
-    travelMode: google.maps.TravelMode.DRIVING
-  }, function(response, status) {
-    if (status === google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-    } else {
-      window.alert('Directions request failed due to ' + status);
+    if (start.length == 0 || end.length == 0) {
+        // Display input error
+        return;
     }
-  });
 
-  var service = new google.maps.DistanceMatrixService();
-    service.getDistanceMatrix({
-        origins: [start],
-        destinations: [end],
-        travelMode: google.maps.TravelMode.DRIVING,
-        unitSystem: google.maps.UnitSystem.IMPERIAL,
-        avoidHighways: false,
-        avoidTolls: false
-    }, function (response, status) {
-        if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
-            var distance = response.rows[0].elements[0].distance.text;
-            var duration = response.rows[0].elements[0].duration.text;
+    var queryStart = base + start.replace(" ", "+") + ".json?access_token=" + key;
+    var queryEnd = base + end.replace(" ", "+") + ".json?access_token=" + key;
 
-            var dvDistance = document.getElementById("dvDistance");
-            dvDistance.innerHTML = "";
-            dvDistance.innerHTML += "Distance: " + distance + "<br />";
-            dvDistance.innerHTML += "Duration:" + duration;
-        } else {
-            alert("Unable to find the distance via road");
-        }
+    var startLat;
+    var startLng;
+    var endLat;
+    var endLng;
+
+    $.when(
+        $.getJSON(queryStart, function( data ) {
+            startLat = data.features[0].center[0];
+            startLng = data.features[0].center[1];
+        }),
+
+        $.getJSON(queryEnd, function( data ) {
+            endLat = data.features[0].center[0];
+            endLng = data.features[0].center[1];
+        }))
+    .then(function() {
+        //addMarkers(startLat, startLng, endLat, endLng);
+        drawRoute(startLat, startLng, endLat, endLng);
     });
 }
 
+/**
+ * Given two LatLng coordinates, compute the coordinates of the midpoint
+ */
+function getMidpoint(startLat, startLng, endLat, endLng) {
+    /* degrees = radians * (180/pi)
+     * radians = degrees * (pi/180)
+     */
+    var dLng = (endLng - startLng) * (Math.PI / 180);
+
+    var lat1 = startLat * (Math.PI / 180);
+    var lat2 = endLat * (Math.PI / 180);
+    var lng1 = startLng * (Math.PI / 180);
+
+    var bx = Math.cos(lat2) * Math.cos(dLng);
+    var by = Math.cos(lat2) * Math.sin(dLng);
+    
+    var lat3 = 
+        Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1) + bx) * (Math.cos(lat1) + bx) + by * by));
+    var lng3 = lng1 + Math.atan2(by, Math.cos(lat1) + bx);
+
+    return [lat3 * (180 / Math.PI), lng3 * (180 / Math.PI)];
+}
+
+/**
+ * Add markers to map for start and destination
+ */
+function addMarkers(startLat, startLng, endLat, endLng) {
+    var geoJson = {
+        "type": "FeatureCollection",
+
+        "features": [{
+            "type": "Feature",
+            "properties": {
+                "title": "Start",
+                "description": "Start",
+                "marker-size": "large",
+                "marker-symbol": "circle",
+                "marker-color": "#37459D"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [startLat, startLng]
+            }
+        }, {
+            "type": "Feature",
+            "properties": {
+                "title": "End",
+                "description": "Destination",
+                "marker-size": "large",
+                "marker-symbol": "embassy",
+                "marker-color": "#37459D"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [endLat, endLng]
+            }
+        }]
+    };
+
+    var featureLayer = L.mapbox.featureLayer().addTo(map);
+    featureLayer.setGeoJSON(geoJson);
+    map.fitBounds(featureLayer.getBounds());
+};
+
+/**
+ * Draw a driving route on the map between two LatLng coordinates
+ * Test: startLat: 
+ */
+function drawRoute(startLat, startLng, endLat, endLng) {
+    query = baseDirections + 
+        startLat + "," + startLng + ";" + endLat + "," + endLng + ".json?access_token=" + key;
+    
+    $.getJSON(query, function(data) {
+        var lineStyle = {
+            "color": "#1FBAD6",
+            "weight": 5,
+            "opacity": 0.65
+        };
+
+        L.geoJson(data.routes[0].geometry, { style: lineStyle }).addTo(map);
+    });
+
+    var geoJson = {
+        type: "FeatureCollection",
+        features: [
+            {
+                type: "Feature",
+                
+                properties: {
+                    "title": "Start",
+                    "description": "Start",
+                    "marker-size": "large",
+                    "marker-symbol": "star",
+                    "marker-color": "#37459D",             
+                },
+                
+                geometry: {
+                    type: "Point",
+                    coordinates: [startLat, startLng]
+                }
+            },
+            {
+                type: "Feature",
+                
+                properties: {
+                    "title": "End",
+                    "description": "End",
+                    "marker-size": "large",
+                    "marker-symbol": "embassy",
+                    "marker-color": "#37459D",   
+                },
+                
+                geometry: {
+                    type: "Point",
+                    coordinates: [endLat, endLng]
+                }
+            }
+        ]
+    };
+
+    /* Automatic routing
+    var origin = geoJson.features[0];
+    var destination = geoJson.features[1];
+    var directions = L.mapbox.directions({
+        profile: 'mapbox.driving'
+    });
+    directions.setOrigin(origin).setDestination(destination).query();
+    var directionsLayer = L.mapbox.directions.layer(directions).addTo(map);
+    var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
+    */
+
+    var featureLayer = L.mapbox.featureLayer().addTo(map);
+    featureLayer.setGeoJSON(geoJson);
+    map.fitBounds(featureLayer.getBounds());
+};
+
 </script>
 
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsLmbeVhCauwbvSdRN8PYpKI5I5zSq4gY&callback=initMap">
-</script>
-
-        </script>
     </body>
 </html>

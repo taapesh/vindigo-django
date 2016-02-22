@@ -3,9 +3,11 @@ input {
     width: 250px;
     font-size: 18px;
     border-color: #ccc;
+    padding-left: 5px;
 }
 
 .test-drive-btn {
+    background: #36449C;
     height: 40px;
     margin-left: 15px;
 }
