@@ -69,6 +69,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="/static/js/jquery-1.11.3.min.js"><\/script>')</script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="/static/js/animatedMarker.js"></script>
         <script src="/static/js/main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -112,6 +113,37 @@ var map = L.mapbox.map('map', 'mapbox.streets', {zoomControl: false})
 
 map.doubleClickZoom.disable();
 map.scrollWheelZoom.disable();
+
+/**
+ * Test animated marker
+ */
+
+//window.setTimeout(switchMarkerPosition, 1000);
+
+var switcher = 1;
+function switchMarkerPosition() {
+    var newPosition;
+
+    if (switcher == 1) {
+        newPosition = [32.786078, -96.781977];
+    } else {
+        newPosition = [32.78194730000001, -96.79070819999998];
+    }
+    marker.setLatLng(newPosition);
+    switcher *= -1;
+
+    //marker.updateOptions({ angle: 0 });
+    window.setTimeout(switchMarkerPosition, 3000);
+}
+
+function randomizeAngle() {
+    return Math.random() * (359-1) * 1;
+}
+
+function randomizePosition() {
+    return Math.random() * (.02 - -.02) + -.02;
+}
+
 
 /**
  * For quick testing
@@ -246,40 +278,12 @@ function addMarkers(startLat, startLng, endLat, endLng) {
 
 /**
  * Draw a driving route on the map between two LatLng coordinates
- * Test: startLat: 
  */
 function drawRoute(startLat, startLng, endLat, endLng) {
     var distance;
     var duration;
 
-    var query = baseDirections + 
-        startLat + "," + startLng + ";" + endLat + "," + endLng + ".json?access_token=" + key;
-    
-    $.getJSON(query, function(data) {
-        var lineStyle = {
-            "color": "#1FBAD6",
-            "weight": 5,
-            "opacity": 0.65
-        };
-
-        L.geoJson(data.routes[0].geometry, { style: lineStyle }).addTo(map);
-
-        distance = data.routes[0].distance;
-        duration = data.routes[0].duration;
-
-        var distanceStr = formatDistance(distance);
-        var durationStr = formatDuration(duration);
-
-        
-        if (!statsHeader.is(":visible")) {
-            statsHeader.show();
-        }
-
-        $("#tripDistance").html(distanceStr);
-        $("#tripDuration").html(durationStr);
-    });
-
-    var geoJson = {
+    var markerGeoJson = {
         type: "FeatureCollection",
         features: [
             {
@@ -317,20 +321,66 @@ function drawRoute(startLat, startLng, endLat, endLng) {
         ]
     };
 
-    /* Automatic routing
-    var origin = geoJson.features[0];
-    var destination = geoJson.features[1];
-    var directions = L.mapbox.directions({
-        profile: 'mapbox.driving'
-    });
-    directions.setOrigin(origin).setDestination(destination).query();
-    var directionsLayer = L.mapbox.directions.layer(directions).addTo(map);
-    var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
-    */
-
     var featureLayer = L.mapbox.featureLayer().addTo(map);
-    featureLayer.setGeoJSON(geoJson);
+    featureLayer.setGeoJSON(markerGeoJson);
     map.fitBounds(featureLayer.getBounds());
+
+    var query = baseDirections + 
+        startLat + "," + startLng + ";" + endLat + "," + endLng + ".json?access_token=" + key;
+    
+    $.getJSON(query, function(data) {
+        var lineStyle = {
+            "color": "#1FBAD6",
+            "weight": 5,
+            "opacity": 0.65
+        };
+
+        var geojson = data.routes[0].geometry;
+        L.geoJson(geojson, { style: lineStyle }).addTo(map);
+
+        distance = data.routes[0].distance;
+        duration = data.routes[0].duration;
+
+        map.addOneTimeEventListener('zoomend', function() {
+            
+        });
+
+        var distanceStr = formatDistance(distance);
+        var durationStr = formatDuration(duration);
+
+        
+        if (!statsHeader.is(":visible")) {
+            statsHeader.show();
+        }
+
+        $("#tripDistance").html(distanceStr);
+        $("#tripDuration").html(durationStr);
+
+        simulateDrive(startLat, startLng, geojson);
+    });
+}
+
+/**
+ * Simulate a car driving along the route
+ */
+function simulateDrive(startLat, startLng, geojson) {
+    var carIcon = L.icon({
+        iconUrl: '/static/img/car.svg',
+        iconSize: L.point(32, 32)
+    });
+
+    // LatLng objects are reversed from what they need to be
+    var coords = geojson.coordinates;
+    var numCoords = coords.length;
+    for (var i = 0; i < numCoords; i++) {
+        var tmp = coords[i][0];
+        coords[i][0] = coords[i][1];
+        coords[i][1] = tmp;
+    }
+
+    var line = L.polyline(coords);
+    var animatedMarker = L.animatedMarker(line.getLatLngs(), {icon: carIcon});
+    map.addLayer(animatedMarker);
 }
 
 /**
