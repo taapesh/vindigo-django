@@ -10,20 +10,34 @@
         <link rel="stylesheet" href="/static/css/normalize.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         
+        <!-- Font -->
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:600,700' rel='stylesheet' type='text/css'>
+
         <!-- Mapbox -->
         <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
         <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
         <script src='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.js'></script>
         <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.css' type='text/css' />
 
-        <link rel="stylesheet" href="/static/css/main.css">
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
         <link rel="stylesheet" href="/static/css/custom.css">
         <script src="/static/js/modernizr-2.8.3.min.js"></script>
 
         <style>
-            body { margin:0; padding:0; }
-            #map { top:0; bottom:0; width:100%; height: 420px; border-color: #333; border-width: 1px; border-style: solid; }
+            body {
+                margin:0;
+                padding:0;
+            }
+
+            #map {
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                height: 420px;
+                border-color: #ABAAAA;
+                border-width: 1px;
+                border-style: solid;
+            }
         </style>
 
     </head>
@@ -35,11 +49,21 @@
 
         <div id="map"></div>
 
-        <div class="container" style="margin-top: 30px">
-            <input id="start" type="text" placeholder="Start"></input>
-            <input id="end" type="text" placeholder="End"></input>
-            <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Test Drive</button>
-            <div id="stats"></div>
+        <div class="container">
+
+            <div class="col-md-6" style="width: 300px; margin-top: 30px">
+                <input id="start" type="text" placeholder="Start"></input>
+                <input id="end" type="text" placeholder="End"></input>
+                <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Test Drive</button>
+
+                <button class="pure-button test-test" onclick="testGetCoords()">Test Test Drive</button>
+            </div>
+
+            <div class="col-md-6" style="margin-top: 20px">
+                <h2 id="statsHeader">Trip Stats</h2>
+                <div id="tripDistance" class="trip-statistic"></div>
+                <div id="tripDuration" class="trip-statistic"></div>
+            </div>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -59,9 +83,23 @@
 
 
 <script>
-var base = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
-var baseDirections = "https://api.mapbox.com/v4/directions/mapbox.driving/"
-var key = "pk.eyJ1IjoidGFhcGVzaCIsImEiOiJjaWt4eW9iNXgwMHo4dnltM2x4eTJ4eHE3In0.04-WgulwzLNQTZLRinDiJw"
+"use strict";
+
+var statsHeader;
+
+$(function() {
+    statsHeader = $("#statsHeader");
+    statsHeader.hide();
+});
+
+// Constants
+const METERS_IN_MILE = 1609.34;
+const MILES_CUTOFF = METERS_IN_MILE / 10;
+const base = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
+const baseDirections = "https://api.mapbox.com/v4/directions/mapbox.driving/"
+const key = "pk.eyJ1IjoidGFhcGVzaCIsImEiOiJjaWt4eW9iNXgwMHo4dnltM2x4eTJ4eHE3In0.04-WgulwzLNQTZLRinDiJw"
+
+// Elements
 
 // Set access token
 L.mapbox.accessToken = 'pk.eyJ1IjoidGFhcGVzaCIsImEiOiJjaWt4eW9iNXgwMHo4dnltM2x4eTJ4eHE3In0.04-WgulwzLNQTZLRinDiJw';
@@ -74,6 +112,37 @@ var map = L.mapbox.map('map', 'mapbox.streets', {zoomControl: false})
 
 map.doubleClickZoom.disable();
 map.scrollWheelZoom.disable();
+
+/**
+ * For quick testing
+ */
+function testGetCoords() {
+    var start = "2203+Commerce+St,+Dallas,+TX";
+    var end = "2901+Indiana+St.+Dallas,+TX";
+
+    var queryStart = base + start + ".json?access_token=" + key;
+    var queryEnd = base + end + ".json?access_token=" + key;
+
+    var startLat;
+    var startLng;
+    var endLat;
+    var endLng;
+
+    $.when(
+        $.getJSON(queryStart, function( data ) {
+            startLat = data.features[0].center[0];
+            startLng = data.features[0].center[1];
+        }),
+
+        $.getJSON(queryEnd, function( data ) {
+            endLat = data.features[0].center[0];
+            endLng = data.features[0].center[1];
+        }))
+    .then(function() {
+        //addMarkers(startLat, startLng, endLat, endLng);
+        drawRoute(startLat, startLng, endLat, endLng);
+    });
+}
 
 /**
  * Convert text location of start/end to LatLng coordinates and start trip
@@ -173,14 +242,17 @@ function addMarkers(startLat, startLng, endLat, endLng) {
     var featureLayer = L.mapbox.featureLayer().addTo(map);
     featureLayer.setGeoJSON(geoJson);
     map.fitBounds(featureLayer.getBounds());
-};
+}
 
 /**
  * Draw a driving route on the map between two LatLng coordinates
  * Test: startLat: 
  */
 function drawRoute(startLat, startLng, endLat, endLng) {
-    query = baseDirections + 
+    var distance;
+    var duration;
+
+    var query = baseDirections + 
         startLat + "," + startLng + ";" + endLat + "," + endLng + ".json?access_token=" + key;
     
     $.getJSON(query, function(data) {
@@ -191,6 +263,20 @@ function drawRoute(startLat, startLng, endLat, endLng) {
         };
 
         L.geoJson(data.routes[0].geometry, { style: lineStyle }).addTo(map);
+
+        distance = data.routes[0].distance;
+        duration = data.routes[0].duration;
+
+        var distanceStr = formatDistance(distance);
+        var durationStr = formatDuration(duration);
+
+        
+        if (!statsHeader.is(":visible")) {
+            statsHeader.show();
+        }
+
+        $("#tripDistance").html(distanceStr);
+        $("#tripDuration").html(durationStr);
     });
 
     var geoJson = {
@@ -201,7 +287,7 @@ function drawRoute(startLat, startLng, endLat, endLng) {
                 
                 properties: {
                     "title": "Start",
-                    "description": "Start",
+                    "description": "",
                     "marker-size": "large",
                     "marker-symbol": "star",
                     "marker-color": "#37459D",             
@@ -217,7 +303,7 @@ function drawRoute(startLat, startLng, endLat, endLng) {
                 
                 properties: {
                     "title": "End",
-                    "description": "End",
+                    "description": "",
                     "marker-size": "large",
                     "marker-symbol": "embassy",
                     "marker-color": "#37459D",   
@@ -245,7 +331,38 @@ function drawRoute(startLat, startLng, endLat, endLng) {
     var featureLayer = L.mapbox.featureLayer().addTo(map);
     featureLayer.setGeoJSON(geoJson);
     map.fitBounds(featureLayer.getBounds());
-};
+}
+
+/**
+ * Get string representation of input distance (meters)
+ */
+function formatDistance(distance) {
+    if (distance < MILES_CUTOFF) {
+        return distance + " ft";
+    } else if (distance <= METERS_IN_MILE) {
+        return (distance / METERS_IN_MILE).toFixed(2) + " mile";
+    } else {
+        return (distance / METERS_IN_MILE).toFixed(2) + " miles";
+    }
+}
+
+/**
+ * Get string representation of input duration (seconds)
+ */
+function formatDuration(duration) {
+    if (duration > 3600) {
+        var hours = Math.floor(duration / 3600);
+        var remainingSeconds = duration % 3600;
+        var minutes = Math.floor(remainingSeconds / 60);
+        return hours + " h " + minutes + " minutes";
+    } else if (duration > 60) {
+        var minutes = Math.floor(duration / 60);
+        var remainingSeconds = duration % 60;
+        return minutes + " min " + remainingSeconds + " sec";
+    } else {
+        return duration + " sec";
+    }
+}
 
 </script>
 

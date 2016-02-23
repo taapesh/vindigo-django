@@ -1,13 +1,48 @@
-input {
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+button {
     height: 40px;
-    width: 250px;
+    width: 120px;
+}
+
+input {
+    height: 45px;
     font-size: 18px;
     border-color: #ccc;
-    padding-left: 5px;
+    width: 100%;
+}
+
+input[type="text"] {
+    display: block;
+    font-family: sans-serif;
+    font-size: 18px;
+    box-shadow: none;
+    border-radius: none;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 7px;
+    border: solid 3px #c9c9c9;
+    transition: border 0.3s;
+}
+
+input[type="text"]:focus {
+    border: solid 3px #28AADC;
+    outline: none;
 }
 
 .test-drive-btn {
     background: #36449C;
-    height: 40px;
-    margin-left: 15px;
+}
+
+.test-test {
+    background: #1CB841;
+    color: #fff;
+    float: right;
+}
+
+.trip-statistic {
+    font-size: 20px;
+    font-weight: 500;
 }
