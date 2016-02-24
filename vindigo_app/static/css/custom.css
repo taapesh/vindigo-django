@@ -28,42 +28,78 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-    border: solid 3px #28AADC;
+    border: solid 3px #36449C;
     outline: none;
 }
 
+.vindigo-main-panel {
+    background: #f9f9f9;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #cccccc;
+    padding-left: 0;
+    padding-right: 0;
+    height: 430px;
+}
+
+.vindigo-header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #36449C;
+}
+
+.vindigo-header h2 {
+    color: #eee;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+
+.vindigo-trip-form {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 .vindigo-events {
-    margin-bottom: 50px;
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
 }
 
 .vindigo-event {
-    background: #f9f9f9;
+    background: #fff;
     border-style: solid;
     border-width: 1px;
     border-color: #cccccc;
     width: 100%;
     padding: 10px;
-    margin-bottom: 2px;
 }
 
 .event-header {
     font-size: 16px;
 }
+
 .event-message {
     font-size: 12px;
 }
 
 .test-drive-btn {
     background: #36449C;
+    width: 49%;
 }
 
 .test-test {
     background: #1CB841;
     color: #fff;
-    float: right;
+    width: 49%;
+}
+
+.trip-stats {
+    margin-top: 20px;
+    text-align: center;
 }
 
 .trip-statistic {
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 15px;
 }

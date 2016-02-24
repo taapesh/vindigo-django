@@ -7,8 +7,8 @@ var Geofence = function (center, radius) {
 };
 
 Geofence.prototype.getLatLng = function() {
-  console.log("Geofence center " + this.center);
-  return [this.center[0], this.center[1]];
+    console.log("Geofence center " + this.center);
+    return [this.center[0], this.center[1]];
 };
 
 Geofence.prototype.getCenterLat = function() {

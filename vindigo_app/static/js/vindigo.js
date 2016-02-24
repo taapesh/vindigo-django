@@ -1,12 +1,13 @@
 'use strict';
 
+var vindigoMainPanel;
+var vindigoTripForm;
 var vindigoEvents;
-var statsHeader;
 
 $(function() {
+    vindigoMainPanel = $('#vindigoMainPanel');
+    vindigoTripForm = $('#vindigoTripForm');
     vindigoEvents = $('#vindigoEvents');
-    statsHeader = $('#statsHeader');
-    statsHeader.hide();
 });
 
 // Constants
@@ -63,7 +64,7 @@ function testGetCoords() {
         }))
     .then(function() {
         drawRoute(startLat, startLng, endLat, endLng);
-        createGeofence(-96.786489, 32.783331, 150);
+        createGeofence(start, 150);
     });
 }
 
@@ -123,47 +124,6 @@ function getMidpoint(startLat, startLng, endLat, endLng) {
     var lng3 = lng1 + Math.atan2(by, Math.cos(lat1) + bx);
 
     return [lat3 * (180 / Math.PI), lng3 * (180 / Math.PI)];
-}
-
-/**
- * Add markers to map for start and destination
- */
-function addMarkers(startLat, startLng, endLat, endLng) {
-    var geoJson = {
-        'type': 'FeatureCollection',
-
-        'features': [{
-            'type': 'Feature',
-            'properties': {
-                'title': 'Start',
-                'description': '',
-                'marker-size': 'large',
-                'marker-symbol': 'circle',
-                'marker-color': '#37459D'
-            },
-            'geometry': {
-                'type': 'Point',
-                'coordinates': [startLat, startLng]
-            }
-        }, {
-            'type': 'Feature',
-            'properties': {
-                'title': 'End',
-                'description': '',
-                'marker-size': 'large',
-                'marker-symbol': 'embassy',
-                'marker-color': '#37459D'
-            },
-            'geometry': {
-                'type': 'Point',
-                'coordinates': [endLat, endLng]
-            }
-        }]
-    };
-
-    var featureLayer = L.mapbox.featureLayer().addTo(map);
-    featureLayer.setGeoJSON(geoJson);
-    map.fitBounds(featureLayer.getBounds());
 }
 
 /**
@@ -232,20 +192,16 @@ function drawRoute(startLat, startLng, endLat, endLng) {
         var distanceStr = formatDistance(distance);
         var durationStr = formatDuration(duration);
 
-        
-        if (!statsHeader.is(':visible')) {
-            statsHeader.show();
-        }
+        $('#tripDistance').html("<b>DISTANCE:</b>  " + distanceStr);
+        $('#tripDuration').html("<b>DURATION:</b>  " + durationStr);
 
-        $('#tripDistance').html(distanceStr);
-        $('#tripDuration').html(durationStr);
-
+        vindigoTripForm.hide();
         simulateDrive(startLat, startLng, geojson, duration);
     });
 }
 
 /**
- * Simulate a car driving along the route
+ * Simulate a vehicle driving along the route
  */
 function simulateDrive(startLat, startLng, geojson, duration) {
     var carIcon = L.icon({
@@ -335,20 +291,28 @@ function toRad(x) {
 /**
  * Draw a geofence on map
  */
-function createGeofence(centerLat, centerLng, radius) {
-    var featureGroup = L.featureGroup().addTo(map)
+function createGeofence(address, radius) {
+    var query = baseGeocoding + address.replace(' ', '+') + json + requestToken;
 
-    var circleOptions = {
-      color: '#37459D',     // Stroke color
-      opacity: .8,          // Stroke opacity
-      weight: 2,            // Stroke weight
-      fillColor: '#37459D', // Fill color
-      fillOpacity: 0.1      // Fill opacity
-    };
+    $.getJSON(query, function( data ) {
+        var center = data.features[0].center;
+        var centerLat = center[0];
+        var centerLng = center[1];
 
-    var geofenceCircle = L.circle([centerLng, centerLat], radius, circleOptions).addTo(featureGroup);
-    var fence = new Geofence([centerLng, centerLat], radius);
-    geofences.push(fence);
+        var featureGroup = L.featureGroup().addTo(map)
+
+        var circleOptions = {
+            color: '#37459D',     // Stroke color
+            opacity: .8,          // Stroke opacity
+            weight: 2,            // Stroke weight
+            fillColor: '#37459D', // Fill color
+            fillOpacity: 0.1      // Fill opacity
+        };
+
+        var geofenceCircle = L.circle([centerLng, centerLat], radius, circleOptions).addTo(featureGroup);
+        var fence = new Geofence([centerLng, centerLat], radius);
+        geofences.push(fence);
+    });
 }
 
 /**

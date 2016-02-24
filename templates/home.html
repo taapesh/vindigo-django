@@ -6,9 +6,6 @@
         <title>Vindigo</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <link rel="stylesheet" href="/static/css/normalize.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         
         <!-- Font -->
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:600,700' rel='stylesheet' type='text/css'>
@@ -19,6 +16,9 @@
         <script src='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.js'></script>
         <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.css' type='text/css' />
 
+        <!-- Other -->
+        <link rel="stylesheet" href="/static/css/normalize.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
         <link rel="stylesheet" href="/static/css/custom.css">
         <script src="/static/js/modernizr-2.8.3.min.js"></script>
@@ -32,14 +32,12 @@
             #map {
                 top: 0;
                 bottom: 0;
-                width: 100%;
-                height: 420px;
+                height: 430px;
                 border-color: #ABAAAA;
                 border-width: 1px;
                 border-style: solid;
             }
         </style>
-
     </head>
 
     <body>
@@ -47,27 +45,34 @@
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <div id="map"></div>
+        <div id="vindigoMainPanel" class="col-md-3 vindigo-main-panel">
 
-        <div class="container">
-
-            <div class="col-md-4" style="width: 300px; margin-top: 30px">
+            <div class="vindigo-header">
+                <h2>VINDIGO</h2>
+            </div>
+            <div id="vindigoTripForm" class="vindigo-trip-form">
                 <input id="start" type="text" placeholder="Start"></input>
                 <input id="end" type="text" placeholder="End"></input>
                 <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Test Drive</button>
-
                 <button class="pure-button test-test" onclick="testGetCoords()">Test Test Drive</button>
             </div>
 
-            <div class="col-md-4" style="margin-top: 20px">
-                <h2 id="statsHeader">Trip Stats</h2>
+            <div id="tripStats" class="trip-stats">
                 <div id="tripDistance" class="trip-statistic"></div>
                 <div id="tripDuration" class="trip-statistic"></div>
             </div>
 
-            <div id="vindigoEvents" class="col-md-4 vindigo-events" style="margin-top: 20px">
-                <h2>Vindigo</h2>
+            <div id="vindigoEvents" class="vindigo-events" style="margin-top: 20px"></div>
+        </div>
 
+        <div id="map" class="col-md-9"></div>
+
+        <div class="container">
+
+            
+
+            <div class="col-md-4" style="margin-top: 20px">
+                
             </div>
         </div>
 
