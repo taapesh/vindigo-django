@@ -1,8 +1,10 @@
 'use strict';
 
+var vindigoEvents;
 var statsHeader;
 
 $(function() {
+    vindigoEvents = $('#vindigoEvents');
     statsHeader = $('#statsHeader');
     statsHeader.hide();
 });
@@ -32,6 +34,7 @@ map.doubleClickZoom.disable();
 map.scrollWheelZoom.disable();
 
 var trip;
+var geofences = [];
 
 /**
  * For quick testing using sample trip
@@ -59,8 +62,8 @@ function testGetCoords() {
             endLng = data.features[0].center[1];
         }))
     .then(function() {
-        //addMarkers(startLat, startLng, endLat, endLng);
         drawRoute(startLat, startLng, endLat, endLng);
+        createGeofence(-96.786489, 32.783331, 150);
     });
 }
 
@@ -238,7 +241,6 @@ function drawRoute(startLat, startLng, endLat, endLng) {
         $('#tripDuration').html(durationStr);
 
         simulateDrive(startLat, startLng, geojson, duration);
-        drawGeofence(startLat, startLng, 200);
     });
 }
 
@@ -262,20 +264,78 @@ function simulateDrive(startLat, startLng, geojson, duration) {
 
     // Duration is in seconds; convert to milliseconds
     trip = L.Marker.movingMarker(coords,
-                        duration*1000, {icon: carIcon}).addTo(map);
+            duration*1000, {icon: carIcon}).addTo(map);
+
     trip.start();
+
+    addVindigoEvent('Trip Started', 'Sit back and enjoy the ride!');
+
     track();
 }
 
+/**
+ * Track a trip in progress
+ */
 function track() {
-    console.log(trip.getLatLng());
-    window.setTimeout(track, 1000);
+    if (!trip.isEnded()) {
+        var coords = trip.getLatLng();
+        var lat = coords.lat;
+        var lng = coords.lng;
+
+        var numFences = geofences.length;
+        for (var i = 0; i < numFences; i++) {
+            var geofence = geofences[i];
+            var geofenceLat = geofence.getCenterLat();
+            var geofenceLng = geofence.getCenterLng();
+            var distance = distanceBetween([geofenceLat, geofenceLng], [lat, lng]);
+            var radius = geofence.getRadius();
+
+            if (distance > radius && geofence.inside) {
+                geofence.onExit();
+                addVindigoEvent('Exiting Geofence', geofence.exitMessage);
+            } else if (distance <= radius && !geofence.inside) {
+                geofence.onEnter();
+                addVindigoEvent('Entering Geofence', geofence.enterMessage);
+            }
+        }
+
+        window.setTimeout(track, 1000);
+    } else {
+        addVindigoEvent('Arrived', 'You have arrived at your destination');
+    }
+}
+
+/**
+ * Compute linear distance between two LatLng points
+ * Haversine formula
+ */
+function distanceBetween(pointA, pointB) {
+    var lat2 = pointB[0]; 
+    var lon2 = pointB[1]; 
+    var lat1 = pointA[0]; 
+    var lon1 = pointA[1];
+
+    var R = 6371000; // metres
+    var dLat = toRad(lat2 - lat1);
+    var dLng = toRad(lon2 - lon1);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLng/2) * Math.sin(dLng/2);
+
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; 
+    return d;
+}
+
+function toRad(x) {
+    return x * Math.PI / 180;
 }
 
 /**
  * Draw a geofence on map
  */
-function drawGeofence(centerLat, centerLng, radius) {
+function createGeofence(centerLat, centerLng, radius) {
     var featureGroup = L.featureGroup().addTo(map)
 
     var circleOptions = {
@@ -286,7 +346,9 @@ function drawGeofence(centerLat, centerLng, radius) {
       fillOpacity: 0.1      // Fill opacity
     };
 
-    var geofence = L.circle([centerLng, centerLat], radius, circleOptions).addTo(featureGroup);
+    var geofenceCircle = L.circle([centerLng, centerLat], radius, circleOptions).addTo(featureGroup);
+    var fence = new Geofence([centerLng, centerLat], radius);
+    geofences.push(fence);
 }
 
 /**
@@ -325,4 +387,12 @@ function formatDuration(duration) {
     } else {
         return duration + ' sec';
     }
+}
+
+function addVindigoEvent(header, message) {
+    vindigoEvents.append($(
+        '<div class="vindigo-event">' +
+        '<div class="event-header">' + header + '</div>' + 
+        '<div class="event-message">' + message + '</div>' +
+        '</div>'));
 }

@@ -32,6 +32,27 @@ input[type="text"]:focus {
     outline: none;
 }
 
+.vindigo-events {
+    margin-bottom: 50px;
+}
+
+.vindigo-event {
+    background: #f9f9f9;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #cccccc;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 2px;
+}
+
+.event-header {
+    font-size: 16px;
+}
+.event-message {
+    font-size: 12px;
+}
+
 .test-drive-btn {
     background: #36449C;
 }
