@@ -112,10 +112,7 @@ input[type="text"]:focus {
 }
 
 .vindigo-events {
-    -webkit-transition: all 1s ease-in-out;
-    -moz-transition: all 1s ease-in-out;
-    -o-transition: all 1s ease-in-out;
-    transition: all 1s ease-in-out;
+    
 }
 
 .vindigo-event {
@@ -186,6 +183,10 @@ input[type="text"]:focus {
 .trip-stats {
     margin-top: 20px;
     text-align: center;
+}
+
+.trip-stats h3 {
+    margin-bottom: 15px;
 }
 
 .trip-statistic {

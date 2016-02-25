@@ -11,6 +11,7 @@ var geofenceRadius;
 var geoEnterMsg;
 var geoExitMsg;
 var geofenceList;
+var tripStats;
 
 $(function() {
     vindigoMainPanel = $('#vindigoMainPanel');
@@ -24,10 +25,12 @@ $(function() {
     geoEnterMsg = $('#geofenceEnterMsg');
     geoExitMsg = $('#geofenceExitMsg');
     geofenceList = $('#geofenceList');
+    tripStats = $('#tripStats');
 
     $('#map').height($(window).height());
 
     geofenceInput.hide();
+    tripStats.hide();
 });
 
 // Constants
@@ -221,6 +224,7 @@ function drawRoute(startLat, startLng, endLat, endLng) {
 
         $('#tripDistance').html("<b>DISTANCE:</b>  " + distanceStr);
         $('#tripDuration').html("<b>DURATION:</b>  " + durationStr);
+        tripStats.show();
 
         vindigoTripForm.hide();
         geofenceForm.hide();
