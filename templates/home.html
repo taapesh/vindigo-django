@@ -32,7 +32,8 @@
             #map {
                 top: 0;
                 bottom: 0;
-                height: 430px;
+                width: 75%;
+                height: 800px;
                 border-color: #ABAAAA;
                 border-width: 1px;
                 border-style: solid;
@@ -45,7 +46,7 @@
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <div id="vindigoMainPanel" class="col-md-3 vindigo-main-panel">
+        <div id="vindigoMainPanel" class="vindigo-main-panel">
 
             <div class="vindigo-header">
                 <h2>VINDIGO</h2>
@@ -54,7 +55,22 @@
                 <input id="start" type="text" placeholder="Start"></input>
                 <input id="end" type="text" placeholder="End"></input>
                 <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Test Drive</button>
-                <button class="pure-button test-test" onclick="testGetCoords()">Test Test Drive</button>
+                <button class="pure-button pure-button-primary test-test" onclick="testGetCoords()">Test Test Drive</button>
+                <hr>
+            </div>
+
+            <div id="geofenceForm" class="geofence-form">
+                <button id="addGeofenceBtn" class="pure-button pure-button-primary show-geofence-form-btn" onclick="showGeofenceForm()">+  Add Geofence</button>
+
+                <div id="geofenceInput" class="geofence-input">
+                    <h3>Add a Geofence</h3>
+                    <input id="geofenceCenter" type="text" placeholder="Address of center"></input>
+                    <input id="geofenceRadius" type="text" placeholder="Radius in meters"></input>
+                    <input id="geofenceEnterMsg" type="text" placeholder="Entering message"></input>
+                    <input id="geofenceExitMsg" type="text" placeholder="Exiting message"></input>
+                    <button class="pure-button pure-button-primary geofence-cancel-btn" onclick="cancelAddGeofence()">Cancel</button>
+                    <button class="pure-button pure-button-primary geofence-confirm-btn" onclick="readGeofenceInput()">OK</button>
+                </div>
             </div>
 
             <div id="tripStats" class="trip-stats">
@@ -65,16 +81,13 @@
             <div id="vindigoEvents" class="vindigo-events" style="margin-top: 20px"></div>
         </div>
 
-        <div id="map" class="col-md-9"></div>
+        <div id="map" class=""></div>
 
-        <div class="container">
+        
 
-            
-
-            <div class="col-md-4" style="margin-top: 20px">
-                
-            </div>
-        </div>
+        <!--
+            <div id="geofenceList" class="geofence-list"></div>
+        -->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="/static/js/jquery-1.11.3.min.js"><\/script>')</script>

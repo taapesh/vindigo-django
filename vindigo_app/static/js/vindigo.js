@@ -3,11 +3,31 @@
 var vindigoMainPanel;
 var vindigoTripForm;
 var vindigoEvents;
+var geofenceForm;
+var addGeofenceBtn;
+var geofenceInput;
+var geofenceCenterAddress;
+var geofenceRadius;
+var geoEnterMsg;
+var geoExitMsg;
+var geofenceList;
 
 $(function() {
     vindigoMainPanel = $('#vindigoMainPanel');
     vindigoTripForm = $('#vindigoTripForm');
     vindigoEvents = $('#vindigoEvents');
+    geofenceForm = $('#geofenceForm');
+    addGeofenceBtn = $('#addGeofenceBtn');
+    geofenceInput = $('#geofenceInput');
+    geofenceCenterAddress = $('#geofenceCenter');
+    geofenceRadius = $('#geofenceRadius');
+    geoEnterMsg = $('#geofenceEnterMsg');
+    geoExitMsg = $('#geofenceExitMsg');
+    geofenceList = $('#geofenceList');
+
+    $('#map').height($(window).height());
+
+    geofenceInput.hide();
 });
 
 // Constants
@@ -64,7 +84,8 @@ function testGetCoords() {
         }))
     .then(function() {
         drawRoute(startLat, startLng, endLat, endLng);
-        createGeofence(start, 150);
+        createGeofence(start, 150, "Arriving at work", "Leaving work");
+        createGeofence(end, 150, "Arriving home", "Leaving home");
     });
 }
 
@@ -170,7 +191,8 @@ function drawRoute(startLat, startLng, endLat, endLng) {
 
     var featureLayer = L.mapbox.featureLayer().addTo(map);
     featureLayer.setGeoJSON(markerGeoJson);
-    map.fitBounds(featureLayer.getBounds());
+    map.fitBounds(featureLayer.getBounds().pad(0.5));
+    
 
     var query = baseDirections + getLatLngString(startLat, startLng, endLat, endLng) + json + requestToken;
     
@@ -178,7 +200,7 @@ function drawRoute(startLat, startLng, endLat, endLng) {
         var lineStyle = {
             'color': '#1FBAD6',
             'weight': 5,
-            'opacity': 0.65
+            'opacity': 0.60
         };
 
         var geojson = data.routes[0].geometry;
@@ -196,6 +218,7 @@ function drawRoute(startLat, startLng, endLat, endLng) {
         $('#tripDuration').html("<b>DURATION:</b>  " + durationStr);
 
         vindigoTripForm.hide();
+        geofenceForm.hide();
         simulateDrive(startLat, startLng, geojson, duration);
     });
 }
@@ -254,7 +277,6 @@ function track() {
                 addVindigoEvent('Entering Geofence', geofence.enterMessage);
             }
         }
-
         window.setTimeout(track, 1000);
     } else {
         addVindigoEvent('Arrived', 'You have arrived at your destination');
@@ -288,18 +310,24 @@ function toRad(x) {
     return x * Math.PI / 180;
 }
 
+function readGeofenceInput() {
+    var address = geofenceCenterAddress.val().replace(' ', '+');
+    var radius = geofenceRadius.val();
+    var enterMsg = geoEnterMsg.val();
+    var exitMsg = geoExitMsg.val();
+    createGeofence(address, radius, enterMsg, exitMsg);
+}
+
 /**
  * Draw a geofence on map
  */
-function createGeofence(address, radius) {
-    var query = baseGeocoding + address.replace(' ', '+') + json + requestToken;
+function createGeofence(address, radius, enterMsg, exitMsg) {
+    var query = baseGeocoding + address + json + requestToken;
 
     $.getJSON(query, function( data ) {
         var center = data.features[0].center;
         var centerLat = center[0];
         var centerLng = center[1];
-
-        var featureGroup = L.featureGroup().addTo(map)
 
         var circleOptions = {
             color: '#37459D',     // Stroke color
@@ -309,9 +337,17 @@ function createGeofence(address, radius) {
             fillOpacity: 0.1      // Fill opacity
         };
 
-        var geofenceCircle = L.circle([centerLng, centerLat], radius, circleOptions).addTo(featureGroup);
-        var fence = new Geofence([centerLng, centerLat], radius);
+
+        var featureLayer = L.mapbox.featureLayer().addTo(map);
+        var geofenceCircle = L.circle([centerLng, centerLat], radius, circleOptions).addTo(featureLayer);
+        map.fitBounds(geofenceCircle.getBounds().pad(0.5));
+        var fence = new Geofence([centerLng, centerLat], radius, enterMsg, exitMsg);
         geofences.push(fence);
+        geofenceInput.hide();
+        addGeofenceBtn.show();
+        $('html, body').animate({ scrollTop: 0 }, 'fast');
+
+        addGeofenceCard('' + centerLng + ', ' + centerLat, '' + radius, enterMsg, exitMsg);
     });
 }
 
@@ -359,4 +395,23 @@ function addVindigoEvent(header, message) {
         '<div class="event-header">' + header + '</div>' + 
         '<div class="event-message">' + message + '</div>' +
         '</div>'));
+}
+
+function addGeofenceCard(center, radius, header, message) {
+    geofenceList.append($(
+    '<div class="geofence-card">' + 
+    'Geofence<br>' + 
+    'Location: ' + center + '</br>' + 
+    'Radius: ' + radius + ' meters' + 
+    '</div>'));
+}
+
+function showGeofenceForm() {
+    addGeofenceBtn.hide();
+    geofenceInput.show();
+}
+
+function cancelAddGeofence() {
+    addGeofenceBtn.show();
+    geofenceInput.hide();
 }

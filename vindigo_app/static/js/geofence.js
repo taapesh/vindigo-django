@@ -1,6 +1,6 @@
-var Geofence = function (center, radius) {
-    this.enterMessage = 'You entered the geofence';
-    this.exitMessage = 'You left the geofence';
+var Geofence = function (center, radius, enterMsg, exitMsg) {
+    this.enterMessage = enterMsg;
+    this.exitMessage = exitMsg;
     this.center = center;
     this.radius = radius;
     this.inside = false;
