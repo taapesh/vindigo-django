@@ -42,6 +42,11 @@ const baseDirections = apiBase + 'v4/directions/mapbox.driving/';
 const json = '.json';
 const requestToken = '?access_token=' + accessToken;
 
+const TRIP_START = 1;
+const TRIP_END = 2;
+const GEO_ENTER = 3;
+const GEO_EXIT = 4;
+
 // Set mapbox access token
 L.mapbox.accessToken = accessToken;
 
@@ -162,7 +167,7 @@ function drawRoute(startLat, startLng, endLat, endLng) {
                     'description': '',
                     'marker-size': 'large',
                     'marker-symbol': 'star',
-                    'marker-color': '#37459D',             
+                    'marker-color': '#1F3A93',             
                 },
                 
                 geometry: {
@@ -178,7 +183,7 @@ function drawRoute(startLat, startLng, endLat, endLng) {
                     'description': '',
                     'marker-size': 'large',
                     'marker-symbol': 'embassy',
-                    'marker-color': '#37459D',   
+                    'marker-color': '#1F3A93',   
                 },
                 
                 geometry: {
@@ -247,7 +252,7 @@ function simulateDrive(startLat, startLng, geojson, duration) {
 
     trip.start();
 
-    addVindigoEvent('Trip Started', 'Sit back and enjoy the ride!');
+    addVindigoEvent('Trip Started', 'Sit back and enjoy the ride!', TRIP_START);
 
     track();
 }
@@ -271,15 +276,15 @@ function track() {
 
             if (distance > radius && geofence.inside) {
                 geofence.onExit();
-                addVindigoEvent('Exiting Geofence', geofence.exitMessage);
+                addVindigoEvent('Exiting Geofence', geofence.exitMessage, GEO_EXIT);
             } else if (distance <= radius && !geofence.inside) {
                 geofence.onEnter();
-                addVindigoEvent('Entering Geofence', geofence.enterMessage);
+                addVindigoEvent('Entering Geofence', geofence.enterMessage, GEO_ENTER);
             }
         }
         window.setTimeout(track, 1000);
     } else {
-        addVindigoEvent('Arrived', 'You have arrived at your destination');
+        addVindigoEvent('Arrived', 'You have arrived at your destination', TRIP_END);
     }
 }
 
@@ -330,10 +335,10 @@ function createGeofence(address, radius, enterMsg, exitMsg) {
         var centerLng = center[1];
 
         var circleOptions = {
-            color: '#37459D',     // Stroke color
+            color: '#1F3A93',     // Stroke color
             opacity: .8,          // Stroke opacity
-            weight: 2,            // Stroke weight
-            fillColor: '#37459D', // Fill color
+            weight: 1.5,            // Stroke weight
+            fillColor: '#1F3A93', // Fill color
             fillOpacity: 0.1      // Fill opacity
         };
 
@@ -389,9 +394,30 @@ function formatDuration(duration) {
     }
 }
 
-function addVindigoEvent(header, message) {
+function addVindigoEvent(header, message, type) {
+    var iconClass = "";
+
+    switch(type) {
+        case TRIP_START:
+            iconClass = "fa-car event-start";
+            break;
+        case TRIP_END:
+            iconClass = "fa-flag event-end";
+            break;
+        case GEO_ENTER:
+            iconClass = "fa-dot-circle-o event-enter";
+            break;
+        case GEO_EXIT:
+            iconClass = "fa-times-circle-o event-exit";
+            break;
+        default:
+            iconClass = "";
+            break;
+    }
+
     vindigoEvents.append($(
         '<div class="vindigo-event">' +
+        '<i class="fa ' + iconClass + ' event-icon"></i>' + 
         '<div class="event-header">' + header + '</div>' + 
         '<div class="event-message">' + message + '</div>' +
         '</div>'));

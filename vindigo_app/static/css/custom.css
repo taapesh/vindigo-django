@@ -13,6 +13,9 @@ input {
     border-color: #ccc;
     width: 100%;
 }
+h1, h2, h3 {
+    margin: 0;
+}
 
 input[type="text"] {
     display: block;
@@ -34,11 +37,6 @@ input[type="text"]:focus {
 
 .vindigo-main-panel {
     background: #f9f9f9;
-    /*border-style: solid;
-    border-width: 1px;
-    border-color: #cccccc;
-    padding-left: 0;
-    padding-right: 0;*/
     width: 25%;
     float: left;
 }
@@ -46,7 +44,7 @@ input[type="text"]:focus {
 .vindigo-header {
     padding-top: 20px;
     padding-bottom: 20px;
-    background: #37459D;
+    background: #1F3A93;
 }
 
 .vindigo-header h2 {
@@ -59,7 +57,6 @@ input[type="text"]:focus {
 .vindigo-trip-form {
     padding-left: 10px;
     padding-right: 10px;
-    margin-bottom: 20px;
 }
 
 .vindigo-trip-form hr {
@@ -69,11 +66,16 @@ input[type="text"]:focus {
 .geofence-form {
     padding-left: 10px;
     padding-right: 10px;
+    padding-top: 5px;
 }
 
 .geofence-input h3 {
     text-align: center;
     font-size: 18px;
+}
+
+.geofence-input hr {
+    border-color: #ccc;
 }
 
 .show-geofence-form-btn {
@@ -126,6 +128,18 @@ input[type="text"]:focus {
     margin-bottom: 1px;
 }
 
+.geo-enter-event {
+    background: #eafaf1;
+}
+
+.geo-exit-event {
+    background: #ffe6e6;
+}
+
+.trip-info-event {
+
+}
+
 .event-header {
     font-size: 16px;
 }
@@ -134,14 +148,39 @@ input[type="text"]:focus {
     font-size: 12px;
 }
 
+.event-icon {
+    float: right;
+    padding-top: 10px;
+    font-size: 18px;
+}
+
+.event-start {
+    color: #1F3A93;
+}
+
+.event-enter {
+    color: #00b300;
+    font-size: 22px;
+}
+
+.event-exit {
+    color: #cc0000;
+    font-size: 22px;
+}
+
+.event-end {
+    color: #1F3A93;  
+}
+
 .test-drive-btn {
-    background: #36449C;
-    width: 49%;
+    background: #1F3A93;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .test-test {
-    width: 49%;
-    float: right;
+    background: #F62459;
+    width: 100%;
 }
 
 .trip-stats {

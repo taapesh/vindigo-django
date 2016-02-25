@@ -17,6 +17,7 @@
         <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.css' type='text/css' />
 
         <!-- Other -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="/static/css/normalize.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
@@ -54,14 +55,12 @@
             <div id="vindigoTripForm" class="vindigo-trip-form">
                 <input id="start" type="text" placeholder="Start e.g. 2303 Commerce St."></input>
                 <input id="end" type="text" placeholder="End e.g. 2901 Indiana St."></input>
-                <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Test Drive</button>
-                <button class="pure-button pure-button-primary test-test" onclick="testGetCoords()">Test Test Drive</button>
-                <hr>
+                <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Start Trip</button>
+                
+                <button id="addGeofenceBtn" class="pure-button pure-button-primary show-geofence-form-btn" onclick="showGeofenceForm()">+  Add Geofence</button>
             </div>
 
             <div id="geofenceForm" class="geofence-form">
-                <button id="addGeofenceBtn" class="pure-button pure-button-primary show-geofence-form-btn" onclick="showGeofenceForm()">+  Add Geofence</button>
-
                 <div id="geofenceInput" class="geofence-input">
                     <h3>Add a Geofence</h3>
                     <input id="geofenceCenter" type="text" placeholder="Address of center"></input>
@@ -71,6 +70,10 @@
                     <button class="pure-button geofence-cancel-btn" onclick="cancelAddGeofence()">Cancel</button>
                     <button class="pure-button pure-button-primary geofence-confirm-btn" onclick="readGeofenceInput()">Add</button>
                 </div>
+
+                <hr>
+
+                <button class="pure-button pure-button-primary test-test" onclick="testGetCoords()">Test</button>
             </div>
 
             <div id="tripStats" class="trip-stats">
