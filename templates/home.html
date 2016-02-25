@@ -52,8 +52,8 @@
                 <h2>VINDIGO</h2>
             </div>
             <div id="vindigoTripForm" class="vindigo-trip-form">
-                <input id="start" type="text" placeholder="Start"></input>
-                <input id="end" type="text" placeholder="End"></input>
+                <input id="start" type="text" placeholder="Start e.g. 2303 Commerce St."></input>
+                <input id="end" type="text" placeholder="End e.g. 2901 Indiana St."></input>
                 <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Test Drive</button>
                 <button class="pure-button pure-button-primary test-test" onclick="testGetCoords()">Test Test Drive</button>
                 <hr>
@@ -66,10 +66,10 @@
                     <h3>Add a Geofence</h3>
                     <input id="geofenceCenter" type="text" placeholder="Address of center"></input>
                     <input id="geofenceRadius" type="text" placeholder="Radius in meters"></input>
-                    <input id="geofenceEnterMsg" type="text" placeholder="Entering message"></input>
-                    <input id="geofenceExitMsg" type="text" placeholder="Exiting message"></input>
-                    <button class="pure-button pure-button-primary geofence-cancel-btn" onclick="cancelAddGeofence()">Cancel</button>
-                    <button class="pure-button pure-button-primary geofence-confirm-btn" onclick="readGeofenceInput()">OK</button>
+                    <input id="geofenceEnterMsg" type="text" placeholder="Entering message e.g. Hello"></input>
+                    <input id="geofenceExitMsg" type="text" placeholder="Exiting message e.g. Goodbye"></input>
+                    <button class="pure-button geofence-cancel-btn" onclick="cancelAddGeofence()">Cancel</button>
+                    <button class="pure-button pure-button-primary geofence-confirm-btn" onclick="readGeofenceInput()">Add</button>
                 </div>
             </div>
 

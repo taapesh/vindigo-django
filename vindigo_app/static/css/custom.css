@@ -17,18 +17,18 @@ input {
 input[type="text"] {
     display: block;
     font-family: sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     box-shadow: none;
     border-radius: none;
     margin-top: 15px;
     margin-bottom: 15px;
     padding-left: 7px;
-    border: solid 3px #c9c9c9;
+    border: solid 2px #c9c9c9;
     transition: border 0.3s;
 }
 
 input[type="text"]:focus {
-    border: solid 3px #0078E7;
+    border: solid 2px #0078E7;
     outline: none;
 }
 
@@ -40,6 +40,7 @@ input[type="text"]:focus {
     padding-left: 0;
     padding-right: 0;*/
     width: 25%;
+    float: left;
 }
 
 .vindigo-header {
@@ -86,8 +87,10 @@ input[type="text"]:focus {
 }
 
 .geofence-cancel-btn {
-    background: #e74c3c;
     width: 49%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ccc;
 }
 
 .geofence-list {
