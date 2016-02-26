@@ -94,6 +94,9 @@ var geofences = [];
  * For quick testing using sample trip
  */
 function testGetCoords() {
+    var device = deviceSelect.val()
+    console.log(device);
+    
     var start = '2203+Commerce+St,+Dallas,+TX';
     var end = '2901+Indiana+St.+Dallas,+TX';
 
