@@ -1,0 +1,1 @@
+web: gunicorn vindigo.wsgi --log-file -

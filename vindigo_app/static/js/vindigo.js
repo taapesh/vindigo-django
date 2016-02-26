@@ -1,5 +1,27 @@
 'use strict';
 
+// Constants
+const METERS_IN_MILE = 1609.34;
+const MILES_CUTOFF = METERS_IN_MILE / 10;
+
+// Mapbox API
+const accessToken = 'pk.eyJ1IjoidGFhcGVzaCIsImEiOiJjaWt4eW9iNXgwMHo4dnltM2x4eTJ4eHE3In0.04-WgulwzLNQTZLRinDiJw';
+const apiBase = 'https://api.mapbox.com/';
+const baseGeocoding = apiBase + 'geocoding/v5/mapbox.places/';
+const baseDirections = apiBase + 'v4/directions/mapbox.driving/';
+const json = '.json';
+const requestToken = '?access_token=' + accessToken;
+
+// Vindigo API
+const vindigoApiBase = "https://morning-ocean-87068.herokuapp.com/";
+const getDevicesBase = vindigoApiBase + "devices/all";
+const createDeviceBase = vindigoApiBase + "devices/create_device";
+
+const TRIP_START = 1;
+const TRIP_END = 2;
+const GEO_ENTER = 3;
+const GEO_EXIT = 4;
+
 var vindigoMainPanel;
 var vindigoTripForm;
 var vindigoEvents;
@@ -12,6 +34,8 @@ var geoEnterMsg;
 var geoExitMsg;
 var geofenceList;
 var tripStats;
+
+var deviceSelect;
 
 $(function() {
     vindigoMainPanel = $('#vindigoMainPanel');
@@ -26,29 +50,26 @@ $(function() {
     geoExitMsg = $('#geofenceExitMsg');
     geofenceList = $('#geofenceList');
     tripStats = $('#tripStats');
+    deviceSelect = $('#deviceSelect');
 
     $('#map').height($(window).height());
 
     geofenceInput.hide();
     tripStats.hide();
+
+    console.log("hi");
+    $.ajax({
+        url: "https://morning-ocean-87068.herokuapp.com/devices/all",
+        type:'GET',
+        dataType: 'jsonp',
+        success: function( json ) {
+            $.each(json, function(i, optionHtml){
+                console.log(optionHtml);
+                deviceSelect.append(optionHtml);
+            });
+        }
+    });
 });
-
-// Constants
-const METERS_IN_MILE = 1609.34;
-const MILES_CUTOFF = METERS_IN_MILE / 10;
-
-// Mapbox API
-const accessToken = 'pk.eyJ1IjoidGFhcGVzaCIsImEiOiJjaWt4eW9iNXgwMHo4dnltM2x4eTJ4eHE3In0.04-WgulwzLNQTZLRinDiJw';
-const apiBase = 'https://api.mapbox.com/';
-const baseGeocoding = apiBase + 'geocoding/v5/mapbox.places/';
-const baseDirections = apiBase + 'v4/directions/mapbox.driving/';
-const json = '.json';
-const requestToken = '?access_token=' + accessToken;
-
-const TRIP_START = 1;
-const TRIP_END = 2;
-const GEO_ENTER = 3;
-const GEO_EXIT = 4;
 
 // Set mapbox access token
 L.mapbox.accessToken = accessToken;
