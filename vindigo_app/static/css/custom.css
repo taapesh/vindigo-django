@@ -203,3 +203,25 @@ select {
 .trip-statistic {
     font-size: 15px;
 }
+
+.device-box {
+    display: inline-block;
+    height: 300px;
+    padding: 10px;
+    margin: 10px;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 1px;
+    min-width: 300px;
+    width: 25%;
+}
+
+.device-box h3 {
+    font-size: 20px;
+}
+
+.main-navbar {
+    padding-top: 10px;
+    height: 70px;
+    background-color: #1F3A93;
+}
