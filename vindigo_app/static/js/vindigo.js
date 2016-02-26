@@ -61,7 +61,6 @@ $(function() {
     $.ajax({
         url: "https://morning-ocean-87068.herokuapp.com/devices/all",
         type:'GET',
-        dataType: 'jsonp',
         success: function( json ) {
             $.each(json, function(i, optionHtml){
                 console.log(optionHtml);
