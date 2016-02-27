@@ -16,6 +16,7 @@ const requestToken = '?access_token=' + accessToken;
 const vindigoApiBase = "https://morning-ocean-87068.herokuapp.com/";
 const getDevicesBase = vindigoApiBase + "devices/all";
 const createDeviceBase = vindigoApiBase + "devices/create_device";
+const logTripBase = vindigoApiBase + "trips/log_trip";
 
 const TRIP_START = 1;
 const TRIP_END = 2;
@@ -91,12 +92,39 @@ var trip;
 var geofences = [];
 
 /**
+ * Save a trip stats under a device
+ */
+ function logTrip(startLat, startLng, endLat, endLng, duration, distance) {
+    var deviceId = $('#deviceSelect :selected').text();
+
+    $.ajax({
+        type: 'POST',
+        url: 'http://morning-ocean-87068.herokuapp.com/trips/log_trip',
+        data: {
+            'device_id': deviceId,
+            'start_lat': startLat,
+            'start_lng': startLng,
+            'end_lat': endLat,
+            'end_lng': endLng,
+            'duration': duration,
+            'distance': distance,
+            'status': 'completed'
+        },
+        success: function (response) {
+            console.log(response);
+        },
+        error: function () {
+            console.log("failed to save trip");
+        }
+    });
+}
+
+/**
  * For quick testing using sample trip
  */
 function testGetCoords() {
     var device = deviceSelect.val()
-    console.log(device);
-    
+
     var start = '2203+Commerce+St,+Dallas,+TX';
     var end = '2901+Indiana+St.+Dallas,+TX';
 
@@ -257,6 +285,8 @@ function drawRoute(startLat, startLng, endLat, endLng) {
         vindigoTripForm.hide();
         geofenceForm.hide();
         simulateDrive(startLat, startLng, geojson, duration);
+
+        logTrip(startLat, startLng, endLat, endLng, duration, distance);
     });
 }
 
@@ -287,6 +317,7 @@ function simulateDrive(startLat, startLng, geojson, duration) {
     addVindigoEvent('Trip Started', 'Sit back and enjoy the ride!', TRIP_START);
 
     track();
+
 }
 
 /**
