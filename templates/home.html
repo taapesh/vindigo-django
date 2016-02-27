@@ -34,6 +34,7 @@
                 top: 0;
                 bottom: 0;
                 width: 75%;
+                min-height: 600px;
                 height: 800px;
                 border-color: #ABAAAA;
                 border-width: 1px;
@@ -52,14 +53,18 @@
             <div class="vindigo-header">
                 <h2>VINDIGO</h2>
             </div>
+
             <div id="vindigoTripForm" class="vindigo-trip-form">
-                <div style="margin-top: 15px; margin-bottom: 5px">Choose a device</div>
-                <select id="deviceSelect" style="margin-bottom: 20px"></select>
+                <div style="margin-top: 15px; margin-bottom: 5px">
+                    Choose a device
+                    <a href="devices" style="margin-left: 8px">(View Devices)</a>
+                </div>
+                <select id="deviceSelect" style="margin-bottom: 4px"></select>
                 <input id="start" type="text" placeholder="Start e.g. 2203 Commerce St."></input>
                 <input id="end" type="text" placeholder="End e.g. 2901 Indiana St."></input>
                 <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Start Trip</button>
                 
-                <button id="addGeofenceBtn" class="pure-button pure-button-primary show-geofence-form-btn" onclick="showGeofenceForm()">+  Add Geofence</button>
+                <button id="addGeofenceBtn" class="pure-button pure-button-primary show-geofence-form-btn" onclick="showGeofenceForm()"><i class="fa fa-plus" style="margin-right: 5px"></i>  Add Geofence</button>
             </div>
 
             <div id="geofenceForm" class="geofence-form">
@@ -75,13 +80,17 @@
 
                 <hr>
 
-                <button class="pure-button pure-button-primary test-test" onclick="testGetCoords()">Test</button>
+                <button class="pure-button test-test" onclick="testGetCoords()">Test</button>
             </div>
 
             <div id="tripStats" class="trip-stats">
+                <div class="clearfix"></div>
                 <h3>Trip Log</h3>
-                <div id="tripDistance" class="trip-statistic"></div>
-                <div id="tripDuration" class="trip-statistic"></div>
+                <div id="tripDistance" class="trip-statistic" style="float: left; margin-left: 25px"></div>
+                <div id="tripDuration" class="trip-statistic" style="float: left; margin-left: 25px"></div>
+                <div class="clearfix"></div>
+                <a href="devices" style="float: left; margin-left: 25px">View Devices</a>
+                <div class="clearfix"></div>
             </div>
 
             <div id="vindigoEvents" class="vindigo-events" style="margin-top: 20px"></div>

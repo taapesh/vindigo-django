@@ -56,7 +56,6 @@ select {
 
 .vindigo-header h2 {
     color: #eee;
-    font-weight: 700;
     margin: 0;
     text-align: center;
 }
@@ -92,13 +91,13 @@ select {
 .geofence-confirm-btn {
     height: 40px;
     background: #2abb67;
-    width: 49%;
+    width: 45%;
     float: right;
 }
 
 .geofence-cancel-btn {
     height: 40px;
-    width: 49%;
+    width: 45%;
     border-style: solid;
     border-width: 1px;
     border-color: #ccc;
@@ -185,7 +184,6 @@ select {
 }
 
 .test-test {
-    background: #F9F9F9;
     color: #000;
     border-style: solid;
     border-color: #ccc;
@@ -227,4 +225,12 @@ select {
     padding-top: 10px;
     height: 70px;
     background-color: #1F3A93;
+}
+
+.back-to-devices {
+    float: left;
+    padding-left: 16px;
+    padding-top: 5px;
+    color: #fff;
+    font-size: 24px;
 }
