@@ -16,15 +16,15 @@ $(function() {
                 var lng = data[i].location_lng;
 
                 if (lat == null) {
-                    lat = 32.7819473;
-                    lng = -96.7907082;
+                    lat = -96.7907082;
+                    lng = 32.7819473;
                 }
 
                 devicesDiv.append(
                     '<div class="device-box">' + 
                     '<h3>' + data[i].device_name + '</h3>' + '<br>' + 
                     data[i].device_id + '<br><br>' +
-                    '<b>Location:</b> ' + lat + ', ' + lng + '<br>' + 
+                    '<b>Location:</b> ' + lng + ', ' + lat + '<br>' + 
                     '<b>Distance Driven:</b> ' + data[i].distance_driven + ' m' + '<br>' + 
                     '<b>Time Driven:</b> ' + data[i].time_driven + ' seconds' + '<br>' + 
                     '</div>');
