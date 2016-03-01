@@ -56,30 +56,6 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <!-- Modal -->
-    <div class="modal fade geofence-modal" id="" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h3><i class="fa fa-dot-circle-o"></i> Add a Geofence</h3>
-            </div>
-            
-            <div class="modal-body">
-                <div id="geofenceForm" class="geofence-form">
-                    <div id="geofenceInput" class="geofence-input">
-                        <input id="geofenceCenter" type="text" placeholder="Address of center"></input>
-                        <input id="geofenceRadius" type="text" placeholder="Radius in meters"></input>
-                        <input id="geofenceEnterMsg" type="text" placeholder="Entering message e.g. Hello"></input>
-                        <input id="geofenceExitMsg" type="text" placeholder="Exiting message e.g. Goodbye"></input>
-                        <button class="pure-button geofence-cancel-btn" class="close" data-dismiss="modal">Cancel</button>
-                        <button class="pure-button pure-button-primary geofence-confirm-btn" onclick="readGeofenceInput()">Add</button>
-                    </div>           
-                </div>
-            </div>
-        </div>
-    </div> 
-
     <!-- line modal -->
     <div id="myModal" class="modal fade" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog" style="width: 430px">
@@ -104,7 +80,7 @@
                     </div>
 
                     <div class="btn-group" role="group">
-                        <button class="btn btn-default geo-confirm-btn" onclick="readGeofenceInput()">Add Geofence</button>
+                        <button class="btn btn-default geo-confirm-btn" onclick="readGeofenceInput()" data-dismiss="modal">Add Geofence</button>
                     </div>
                 </div>
             </div>

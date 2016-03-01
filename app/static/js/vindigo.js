@@ -40,7 +40,6 @@ var vindigoTripForm;
 var vindigoEvents;
 var geofenceForm;
 var addGeofenceBtn;
-var geofenceInput;
 var geofenceCenterAddress;
 var geofenceRadius;
 var geoEnterMsg;
@@ -56,7 +55,7 @@ $(function() {
     /**
     * Initialize Mapbox
     */
-    map = L.mapbox.map('map', 'mapbox.streets', {zoomControl: false}) 
+    map = L.mapbox.map('map', 'mapbox.streets', { zoomControl: false }) 
     .setView([32.78194730000001, -96.79070819999998], 17);
 
     map.doubleClickZoom.disable();
@@ -80,7 +79,6 @@ $(function() {
     vindigoEvents = $('#vindigoEvents');
     geofenceForm = $('#geofenceForm');
     addGeofenceBtn = $('#addGeofenceBtn');
-    geofenceInput = $('#geofenceInput');
     geofenceCenterAddress = $('#geofenceCenter');
     geofenceRadius = $('#geofenceRadius');
     geoEnterMsg = $('#geofenceEnterMsg');
@@ -91,7 +89,6 @@ $(function() {
 
     $('#map').height($(window).height());
 
-    geofenceInput.hide();
     tripStats.hide();
 
     $.ajax({
@@ -413,10 +410,6 @@ function readGeofenceInput() {
     var radius = geofenceRadius.val();
     var enterMsg = geoEnterMsg.val();
     var exitMsg = geoExitMsg.val();
-    console.log("Address: " + address);
-    console.log(radius);
-    console.log(enterMsg);
-    console.log(exitMsg);
     createGeofence(address, radius, enterMsg, exitMsg);
 }
 
@@ -445,7 +438,6 @@ function createGeofence(address, radius, enterMsg, exitMsg) {
         map.fitBounds(geofenceCircle.getBounds().pad(0.5));
         var fence = new Geofence([centerLng, centerLat], radius, enterMsg, exitMsg);
         geofences.push(fence);
-        geofenceInput.hide();
         $('html, body').animate({ scrollTop: 0 }, 'fast');
 
         addGeofenceCard('' + centerLng + ', ' + centerLat, '' + radius, enterMsg, exitMsg);
@@ -511,12 +503,14 @@ function addVindigoEvent(header, message, type) {
             break;
     }
 
-    vindigoEvents.append($(
-        '<div class="vindigo-event">' +
+    var div = $('<div class="vindigo-event">' +
         '<i class="fa ' + iconClass + ' event-icon"></i>' + 
         '<div class="event-header">' + header + '</div>' + 
         '<div class="event-message">' + message + '</div>' +
-        '</div>'));
+        '</div>');
+    div.hide();
+    vindigoEvents.append(div);
+    div.slideToggle();
 }
 
 function addGeofenceCard(center, radius, header, message) {
@@ -529,10 +523,9 @@ function addGeofenceCard(center, radius, header, message) {
 }
 
 function showGeofenceForm() {
-    geofenceInput.show();
+
 }
 
 function cancelAddGeofence() {
     addGeofenceBtn.show();
-    geofenceInput.hide();
 }
