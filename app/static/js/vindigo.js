@@ -1,5 +1,17 @@
 'use strict';
 
+$(window).load(function() {
+    $('.fullscreen-element').each(function() {
+        $(this).css('height', $(window).height());
+    });
+
+    $(window).resize(function() {
+        $('.fullscreen-element').each(function() {
+            $(this).css('height', $(window).height());
+        });
+    });
+});
+
 // Constants
 const METERS_IN_MILE = 1609.34;
 const MILES_CUTOFF = METERS_IN_MILE / 10;
@@ -38,7 +50,31 @@ var tripStats;
 
 var deviceSelect;
 
+var map;
+
 $(function() {
+    /**
+    * Initialize Mapbox
+    */
+    map = L.mapbox.map('map', 'mapbox.streets', {zoomControl: false}) 
+    .setView([32.78194730000001, -96.79070819999998], 17);
+
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+
+    $('#addGeofenceBtn').opentip("Add Geofence", {
+        showOn: "mouseover",
+        fixed: true,
+        showEffectDuration: 0.05,
+        hideEffectDuration: 0.1,
+        tipJoint: "bottom", 
+        target: true
+    });
+
+    $("#addGeofenceBtn").click(function(){
+        $("#myModal").modal();
+    });
+
     vindigoMainPanel = $('#vindigoMainPanel');
     vindigoTripForm = $('#vindigoTripForm');
     vindigoEvents = $('#vindigoEvents');
@@ -78,15 +114,6 @@ $(function() {
 
 // Set mapbox access token
 L.mapbox.accessToken = accessToken;
-
-/**
- * Initialize Mapbox
- */
-var map = L.mapbox.map('map', 'mapbox.streets', {zoomControl: false}) 
-    .setView([32.78194730000001, -96.79070819999998], 17);
-
-map.doubleClickZoom.disable();
-map.scrollWheelZoom.disable();
 
 var trip;
 var geofences = [];
@@ -318,6 +345,9 @@ function simulateDrive(startLat, startLng, geojson, duration) {
 
     track();
 
+    $( "#vindigoHeader" ).slideToggle( "slow", function() {
+        // Animation complete.
+    });
 }
 
 /**
@@ -379,10 +409,14 @@ function toRad(x) {
 }
 
 function readGeofenceInput() {
-    var address = geofenceCenterAddress.val().replace(' ', '+');
+    var address = $('#geofenceCenter').val().replace(' ', '+');
     var radius = geofenceRadius.val();
     var enterMsg = geoEnterMsg.val();
     var exitMsg = geoExitMsg.val();
+    console.log("Address: " + address);
+    console.log(radius);
+    console.log(enterMsg);
+    console.log(exitMsg);
     createGeofence(address, radius, enterMsg, exitMsg);
 }
 
@@ -412,7 +446,6 @@ function createGeofence(address, radius, enterMsg, exitMsg) {
         var fence = new Geofence([centerLng, centerLat], radius, enterMsg, exitMsg);
         geofences.push(fence);
         geofenceInput.hide();
-        addGeofenceBtn.show();
         $('html, body').animate({ scrollTop: 0 }, 'fast');
 
         addGeofenceCard('' + centerLng + ', ' + centerLat, '' + radius, enterMsg, exitMsg);
@@ -496,7 +529,6 @@ function addGeofenceCard(center, radius, header, message) {
 }
 
 function showGeofenceForm() {
-    addGeofenceBtn.hide();
     geofenceInput.show();
 }
 

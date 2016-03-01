@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
         <!-- Font -->
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:600,700' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,500,300' rel='stylesheet' type='text/css'>
 
         <!-- Other -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -20,43 +20,56 @@
     </head>
 
     <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
-        <!-- Static navbar -->
-        <nav class="navbar navbar-default navbar-static-top main-navbar">
-          <div class="container">
-            <div class="navbar-header">
-              <a class="navbar-brand" href="devices" style="color: #f9f9f9">VINDIGO</a>
+    <!-- Navbar -->
+    <div class="main-navbar">
+        <div class="container">
+            <div class="nav-logo-container">
+                <a href="/" class="vindigo-nav-logo">Vindigo</a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-              <ul class="nav navbar-nav">
-                <li><a href="/" style="color: #f9f9f9">Test Drive</a></li>
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
 
-              </ul>
-            </div><!--/.nav-collapse -->
-          </div>
-        </nav>
+            <div class="nav-links nav-left">
+                <a href="devices">Devices</a>
+                <a href="/">Drive</a>
+            </div>
 
-        <div id="devices" align="center"></div>
+            <div class="nav-links nav-right">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/static/js/jquery-1.11.3.min.js"><\/script>')</script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script src="/static/js/devices.js"></script>
+            </div>
+        </div>
+    </div>
+    <!-- End Navbar -->
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='https://www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
-        </script>
+    <!-- Main Container -->
+    <div class="main-container" align="center">
+        <div class="devices-header">
+            <h1>Devices</h1>
+            <a href="new_device" class="main-btn new-device-btn">New Device</a>
+            <div class="clearfix"></div>
+            <hr>
+        </div>
+        <!-- Devices dyanmic content -->
+        <div id="devices" align="left"></div>
+    </div>
+    <!-- End Main Container -->
 
-    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/static/js/jquery-1.11.3.min.js"><\/script>')</script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="/static/js/devices.js"></script>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='https://www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+    </script>
+
+</body>
 </html>

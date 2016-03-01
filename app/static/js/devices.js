@@ -22,11 +22,11 @@ $(function() {
 
                 devicesDiv.append(
                     '<div class="device-box">' + 
-                    '<h3>' + data[i].device_name + '</h3>' + '<br>' + 
-                    data[i].device_id + '<br><br>' +
-                    '<b>Location:</b> ' + lng + ', ' + lat + '<br>' + 
-                    '<b>Distance Driven:</b> ' + data[i].distance_driven + ' m' + '<br>' + 
-                    '<b>Time Driven:</b> ' + data[i].time_driven + ' seconds' + '<br>' + 
+                    '<h1>' + data[i].device_name + '</h1>' + 
+                    '<h2>' + data[i].device_id + '</h2>' +
+                    '<h3>' + '<b>Location:</b> ' + lng + ', ' + lat + '</h3>' + 
+                    '<h3>' + '<b>Distance Driven:</b> ' + data[i].distance_driven + ' m' + '</h3>' + 
+                    '<h3>' + '<b>Time Driven:</b> ' + data[i].time_driven + ' seconds' + '</h3>' + 
                     '</div>');
             }
         },

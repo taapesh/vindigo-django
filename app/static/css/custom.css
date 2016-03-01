@@ -1,0 +1,415 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #0e1e2b;
+}
+
+button {
+    height: 45px;
+    width: 120px;
+}
+
+input {
+    height: 45px;
+    font-size: 18px;
+    border-color: #ccc;
+    width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    color: #ECF0F1;
+    letter-spacing: .5px;
+    font-weight: 300;
+}
+
+input {
+    display: block;
+    font-family: sans-serif;
+    font-size: 15px;
+    box-shadow: none;
+    border-radius: none;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 7px;
+    border: solid 1px #ccc;
+    border-radius: 4px;
+}
+
+input:focus {
+    border: solid 1px #1CA8DD;
+    outline: none;
+}
+
+select {
+    font-size: 14px;
+    width: 100%;
+    border: 1px solid #ccc;
+    height: 40px;
+}
+
+a:hover {
+    text-decoration: none !important;
+}
+
+hr {
+    border-color: #434857;
+}
+
+b {
+    font-weight: 500;
+}
+
+.main-btn {
+    font-size: 16px;
+    color: #1997C6;
+    background: transparent;
+    border: 1px solid #1997C6;
+    border-radius: 2px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    -webkit-transition: all .25s ease-in-out;
+    -moz-transition: all .25s ease-in-out;
+    -o-transition: all 25s ease-in-out;
+    transition: all .25s ease-in-out;
+}
+.main-btn:hover {
+    color: #fff;
+    background: #1997C6;
+}
+
+/* Navbar Style */
+.main-navbar {
+    height: 70px;
+    background-color: #f9f9f9;
+    border: none;
+}
+
+.nav-logo-container {
+    float: left;
+    line-height: 70px;
+    margin-right: 20px;
+}
+
+.vindigo-nav-logo {
+    text-transform: uppercase !important;
+    color: #333 !important;
+    font-weight: 300 !important;
+    letter-spacing: 1.5px !important;
+    font-size: 24px;
+}
+
+.nav-links {
+    line-height: 70px;
+}
+
+.nav-links a {
+    text-transform: uppercase !important;
+    color: #333;
+    letter-spacing: .5px;
+    font-size: 14px;
+    margin-right: 14px;
+}
+
+.nav-left {
+    float: left;
+}
+
+.nav-right {
+    float: right;
+}
+/* End Navbar Style */
+
+
+.main-container {
+    padding-top: 70px;
+    padding-bottom: 50px;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.devices-header {
+    text-align: center;
+}
+
+.devices-header h1 {
+    float: left;
+}
+
+.new-device-btn {
+    margin-top: -10px;
+    float: right;
+}
+
+.device-box {
+    display: inline-block;
+    width: 29%;
+    height: 335px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin: 3%;
+    border: 2px solid #434857;
+    border-radius: 5px;
+}
+
+.device-box h1 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.device-box h2 {
+    text-align: center;
+    color: #ECF0F1;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+.device-box h3 {
+    color: #ECF0F1;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+/* Trip Styles */
+.vindigo-side-panel {
+    width: 25%;
+    float: left;
+}
+
+.vindigo-header {
+    padding-top: 22px;
+    padding-bottom: 22px;
+    background: #0E1E2B;
+}
+
+.vindigo-header h2 {
+    font-size: 22px;
+    text-transform: uppercase !important;
+    color: #eee;
+    margin: 0;
+    text-align: center;
+    letter-spacing: 1.5px;
+}
+
+.vindigo-trip-form {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.vindigo-trip-form h5 {
+    margin-bottom: 8px;
+}
+
+.vindigo-trip-form hr {
+    border-color: #ccc;
+}
+
+.geofence-form {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+
+.geofence-input h3 {
+    text-align: center;
+    font-size: 18px;
+}
+
+.geofence-input hr {
+    border-color: #ccc;
+}
+
+.show-geofence-form-btn {
+    width: 100%;
+}
+
+.geo-confirm-btn {
+    color: #fff !important;
+    background: #2abb67;
+}
+
+.geo-confirm-btn:hover, .geo-confirm-btn:focus, .geo-confirm-btn:active {
+    background: #26b262 !important;
+}
+
+.geofence-confirm-btn {
+    height: 40px;
+    background: #2abb67;
+    width: 45%;
+    float: right;
+}
+
+.geofence-cancel-btn {
+    height: 40px;
+    width: 45%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ccc;
+}
+
+.geofence-list {
+    margin-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.geofence-card {
+    background: #fff;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #cccccc;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1px;
+}
+
+.vindigo-events {
+    
+}
+
+.vindigo-event {
+    background: #304150;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 1px;
+}
+
+.geo-enter-event {
+    background: #eafaf1;
+}
+
+.geo-exit-event {
+    background: #ffe6e6;
+}
+
+.trip-info-event {
+
+}
+
+.event-header {
+    color: #D3D8DF;
+    letter-spacing: 1px;
+    font-size: 17px;
+}
+
+.event-message {
+    color: #ECF0F1;
+    letter-spacing: 0.5px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.event-icon {
+    float: right;
+    padding-top: 10px;
+    font-size: 18px;
+}
+
+.event-start {
+    color: #1CA8DD;
+}
+
+.event-enter {
+    color: #1BC98E;
+    font-size: 22px;
+}
+
+.event-exit {
+    color: #E64759;
+    font-size: 22px;
+}
+
+.event-end {
+    color: #1CA8DD; 
+}
+
+.test-drive-btn {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 400;
+    background: #1F3A93;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.test-test {
+    color: #000;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 1px;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.trip-options {
+    margin-bottom: 20px;
+}
+
+.trip-option-btn {
+    display: inline-block;
+    color: #E6E6E6;
+    font-size: 22px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    width: 33px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+.trip-option-btn:hover {
+    cursor: pointer;
+}
+
+.trip-stats {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.trip-stats h3 {
+    margin-bottom: 15px;
+}
+
+.trip-statistic {
+    color: #ECF0F1;
+    font-size: 15px;
+}
+
+.back-to-devices {
+    float: left;
+    padding-left: 16px;
+    padding-top: 5px;
+    color: #fff;
+    font-size: 24px;
+}
+
+.center {
+    margin-top:50px;   
+}
+
+.modal-header {
+    padding-bottom: 5px;
+}
+
+.modal-footer {
+    padding: 0;
+}
+    
+.modal-footer .btn-group button {
+    height: 50px;
+    border-top-left-radius : 0;
+    border-top-right-radius : 0;
+    border: none;
+    border-right: 1px solid #ddd;
+}
+    
+.modal-footer .btn-group:last-child > button {
+    border-right: 0;
+}
+
+.add-geofence-title {
+    color: #333;
+}

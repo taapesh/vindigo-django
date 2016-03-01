@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
         <!-- Font -->
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:600,700' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,500,300' rel='stylesheet' type='text/css'>
 
         <!-- Mapbox -->
         <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
@@ -21,8 +21,18 @@
         <link rel="stylesheet" href="/static/css/normalize.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/css/pure-min.css">
+        <link rel="stylesheet" href="/static/css/opentip.css">
         <link rel="stylesheet" href="/static/css/custom.css">
         <script src="/static/js/modernizr-2.8.3.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/static/js/jquery-1.11.3.min.js"><\/script>')</script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="/static/js/MovingMarker.js"></script>
+        <script src="/static/js/opentip-jquery.js"></script>
+        <script src="/static/js/geofence.js"></script>
+        <script src="/static/js/VindigoTrip.js"></script>
+        <script src="/static/js/vindigo.js"></script>
 
         <style>
             body {
@@ -33,92 +43,125 @@
             #map {
                 top: 0;
                 bottom: 0;
+                min-height: 100%;
                 width: 75%;
-                min-height: 600px;
-                height: 800px;
-                border-color: #ABAAAA;
-                border-width: 1px;
-                border-style: solid;
+                position: absolute;
+                margin-left: 25%;
             }
         </style>
     </head>
 
     <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
-        <div id="vindigoMainPanel" class="vindigo-main-panel">
-
-            <div class="vindigo-header">
-                <h2>VINDIGO</h2>
+    <!-- Modal -->
+    <div class="modal fade geofence-modal" id="" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3><i class="fa fa-dot-circle-o"></i> Add a Geofence</h3>
             </div>
-
-            <div id="vindigoTripForm" class="vindigo-trip-form">
-                <div style="margin-top: 15px; margin-bottom: 5px">
-                    Choose a device
-                    <a href="devices" style="margin-left: 8px">(View Devices)</a>
+            
+            <div class="modal-body">
+                <div id="geofenceForm" class="geofence-form">
+                    <div id="geofenceInput" class="geofence-input">
+                        <input id="geofenceCenter" type="text" placeholder="Address of center"></input>
+                        <input id="geofenceRadius" type="text" placeholder="Radius in meters"></input>
+                        <input id="geofenceEnterMsg" type="text" placeholder="Entering message e.g. Hello"></input>
+                        <input id="geofenceExitMsg" type="text" placeholder="Exiting message e.g. Goodbye"></input>
+                        <button class="pure-button geofence-cancel-btn" class="close" data-dismiss="modal">Cancel</button>
+                        <button class="pure-button pure-button-primary geofence-confirm-btn" onclick="readGeofenceInput()">Add</button>
+                    </div>           
                 </div>
-                <select id="deviceSelect" style="margin-bottom: 4px"></select>
-                <input id="start" type="text" placeholder="Start e.g. 2203 Commerce St."></input>
-                <input id="end" type="text" placeholder="End e.g. 2901 Indiana St."></input>
-                <button class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Start Trip</button>
-                
-                <button id="addGeofenceBtn" class="pure-button pure-button-primary show-geofence-form-btn" onclick="showGeofenceForm()"><i class="fa fa-plus" style="margin-right: 5px"></i>  Add Geofence</button>
             </div>
+        </div>
+    </div> 
 
-            <div id="geofenceForm" class="geofence-form">
-                <div id="geofenceInput" class="geofence-input">
-                    <h3>Add a Geofence</h3>
-                    <input id="geofenceCenter" type="text" placeholder="Address of center"></input>
-                    <input id="geofenceRadius" type="text" placeholder="Radius in meters"></input>
-                    <input id="geofenceEnterMsg" type="text" placeholder="Entering message e.g. Hello"></input>
-                    <input id="geofenceExitMsg" type="text" placeholder="Exiting message e.g. Goodbye"></input>
-                    <button class="pure-button geofence-cancel-btn" onclick="cancelAddGeofence()">Cancel</button>
-                    <button class="pure-button pure-button-primary geofence-confirm-btn" onclick="readGeofenceInput()">Add</button>
+    <!-- line modal -->
+    <div id="myModal" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog" style="width: 430px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="add-geofence-title">Add Geofence</h3>
+            </div>
+            <div class="modal-body">
+                <div id="geofenceForm" class="geofence-form">
+                    <div id="geofenceInput" class="geofence-input">
+                        <input id="geofenceCenter" type="text" placeholder="Address of center"></input>
+                        <input id="geofenceRadius" type="text" placeholder="Radius in meters"></input>
+                        <input id="geofenceEnterMsg" type="text" placeholder="Entering message e.g. Hello"></input>
+                        <input id="geofenceExitMsg" type="text" placeholder="Exiting message e.g. Goodbye"></input>
+                    </div>           
                 </div>
-
-                <hr>
-
-                <button class="pure-button test-test" onclick="testGetCoords()">Test</button>
             </div>
+            <div class="modal-footer">
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
 
-            <div id="tripStats" class="trip-stats">
-                <div class="clearfix"></div>
-                <h3>Trip Log</h3>
-                <div id="tripDistance" class="trip-statistic" style="float: left; margin-left: 25px"></div>
-                <div id="tripDuration" class="trip-statistic" style="float: left; margin-left: 25px"></div>
-                <div class="clearfix"></div>
-                <a href="devices" style="float: left; margin-left: 25px">View Devices</a>
-                <div class="clearfix"></div>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-default geo-confirm-btn" onclick="readGeofenceInput()">Add Geofence</button>
+                    </div>
+                </div>
             </div>
+        </div>
+      </div>
+    </div>
 
-            <div id="vindigoEvents" class="vindigo-events" style="margin-top: 20px"></div>
+    <div id="vindigoMainPanel" class="vindigo-side-panel">
+        <div id="vindigoHeader" class="vindigo-header">
+            <h2>Vindigo</h2>
         </div>
 
-        <div id="map" class=""></div>
+        <div id="vindigoTripForm" class="vindigo-trip-form">
+            <div style="margin-top: 15px; margin-bottom: 5px">
+                <h5>Choose a device</h5>
+            </div>
+            <select id="deviceSelect" style="margin-bottom: 4px"></select>
+            <input id="start" type="text" placeholder="Start e.g. 2203 Commerce St."></input>
+            <input id="end" type="text" placeholder="End e.g. 2901 Indiana St."></input>
+            
+            <div class="trip-options" align="center">
+                <div id="addGeofenceBtn" class="trip-option-btn" onclick="showGeofenceForm()">
+                    <i class="fa fa-dot-circle-o"></i>
+                </div>
 
-        <!--
-            <div id="geofenceList" class="geofence-list"></div>
-        -->
+                <div id="" class="trip-option-btn" onclick="">
+                    <i class="fa fa-fast-forward"></i>
+                </div>
+            </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/static/js/jquery-1.11.3.min.js"><\/script>')</script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script src="/static/js/MovingMarker.js"></script>
-        <script src="/static/js/geofence.js"></script>
-        <script src="/static/js/VindigoTrip.js"></script>
-        <script src="/static/js/vindigo.js"></script>
+            <button id="startTripBtn" class="pure-button pure-button-primary test-drive-btn" onclick="getCoords()">Start Trip</button>
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='https://www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
-        </script>
+            <button id="testTest" class="pure-button test-test" onclick="testGetCoords()">Test</button>
+        </div>
 
-    </body>
+        <div id="tripStats" class="trip-stats">
+            <div class="clearfix"></div>
+            <h3>Trip Log</h3>
+            <div id="tripDistance" class="trip-statistic" style="float: left; margin-left: 25px"></div>
+            <div id="tripDuration" class="trip-statistic" style="float: left; margin-left: 25px"></div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div id="vindigoEvents" class="vindigo-events" style="margin-top: 20px"></div>
+    </div>
+
+    <div id="map" class="fullscreen-element"></div>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='https://www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+    </script>
+
+</body>
 </html>
